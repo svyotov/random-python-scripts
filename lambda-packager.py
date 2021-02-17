@@ -1,9 +1,87 @@
 #!/usr/bin/env python3
 """
 Slims down AWS lambda python deployments - speed up deployments, reduce cost, cleaner code
+Why: managed to zip using the code Tenserflow Lambda of original size ~1GB to ~50Mb.
+This has been written to be used as much  as possible as a standalone, use at your own risk.
+
+Note: injects `unzip_custom_requirements.py` if it does not exist.
+
+You need to add this at the top of your main lambda file, before your other imports.
+```
+try:
+    # This needs to run first
+    import unzip_custom_requirements
+except ImportError:
+    pass
+```
+
 MIT licence
 Author: svyotov
+
+---
+
+Packages all the files in the `requirements.txt` of the project
+Removes all files matching the `anti-requirements.txt` of the project
+Produces a final zip file called `requirements.zip`
+
+---
+Sample requirements.txt:
+```
+boto3>=1.10.0
+pandas>=1.1.0
+```
+
+
+Sample anti-requirements.txt:
+```
+__pycache__*
+*.dist-info
+*.pyo
+*.whl
+*/*.dat
+*/*.gif
+*/*.jpg
+*/*.mp4
+*/*.npy
+*/*.npz
+*/*.pic
+*/*.png
+*/*.tif
+*/*.zip
+*/tests/*
+boto3/*
+botocore-*
+botocore/*
+dist-info/*
+docutils/*
+jmespath/*
+markdown/*
+Markdown/*
+matplotlib/*
+matplotlib/*
+mock/*
+pip/*
+pytest/*
+python-dateutil/*
+pywt/tests/data/dwt_matlabR2012a_result.npz
+s3transfer/*
+setuptools/*
+six/*
+skimage/data/*.gif
+skimage/data/*.jpg
+skimage/data/*.npz
+skimage/data/*.png
+skimage/data/*.tif
+tensorboard/*
+tensorboard/webfiles.zip
+tensorflow/contrib/*
+tensorflow/include/unsupported/*
+termcolor/*
+werkzeug/*
+```
+
 """
+
 import re
 import sys
 import os
